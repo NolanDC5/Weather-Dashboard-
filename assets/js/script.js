@@ -13,9 +13,10 @@ var clearEl = document.getElementById("clear-search")
 var clearDisplayEl = document.getElementById("clear-search")
 var historyEl = document.getElementById("search-history")
 
+// Stores users city selection in local storage
 var searchHistory = JSON.parse(localStorage.getItem("search")) || [];
 
-
+// Gets Users searched city
 searchEl.addEventListener("click", function() {
     const searchReq = cityName.value;
     getWeather(searchReq);
@@ -28,13 +29,14 @@ searchEl.addEventListener("click", function() {
     document.getElementById("cityName").value = "";
 })
 
+// Gets Weather and weather data
 function getWeather(citySearch) {
     let queryUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&appid=" + APIKey;
     axios.get(queryUrl)
 
         .then(function (response) {
             currentWeather.classList.remove("d-none");
-            
+            // Current Forecast
             var todaysDate = new Date(response.data.dt * 1000);
             var day = todaysDate.getDate();
             var month = todaysDate.getMonth() + 1;
@@ -54,6 +56,7 @@ function getWeather(citySearch) {
             var lon = response.data.coord.lon;
             var indexQueryURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey + "&cnt=1";
             axios.get(indexQueryURL)
+                // UV index warning colors
                 .then(function (response) {
                     var indexEl = document.createElement("span");
 
@@ -77,7 +80,7 @@ function getWeather(citySearch) {
             axios.get(forecastURL)
                 .then(function (response) {
                     futureForcast.classList.remove("d-none");
-
+                    // Future Forcast
                     var futureFiveDay = document.querySelectorAll(".forecast")
                     for (i = 0; i < futureFiveDay.length; i++) {
                         futureFiveDay[i].innerHTML = "";
@@ -108,11 +111,11 @@ function getWeather(citySearch) {
                 })
         });
 }
-
+// Function to get correct temperature 
 function k2f(K) {
     return Math.floor((K - 273.15) * 1.8 + 32);
 }
-
+// Search history 
 function renderSearchHistory() {
     historyEl.innerHTML = "";
     for (let i = 0; i < searchHistory.length; i++) {
